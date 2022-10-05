@@ -56,8 +56,8 @@ An API client that interacts with a fake database. Read the file over, but you s
 
 (your responses to the questions in the instructions should go here):
 
-1.
-2.
+1. Two approaches to consider would be returning only the added item, or returning the new list of all items. If you're worried about multiple clients updating the list then you'd likely want to return the full list. That being said, that solution does not scale well for large lists. There would be a large amount of read traffic to the db/backend, and if the UI waits for all items to load then the user experience will be laggy and unresponsive. For our needs, it seems adequate to return only the added item and update our state with the new item.
+2. Mark done had two bugs. First, the Api's `toggleDone` function accepts an id, but the app was passing in the label. Second, the component's state was not updated (same bug as #1). To improve the API, the function name could be updated to something more explicit, for instance `toggleDoneById`. Also, the type of `id` is string. This isn't necessarily bad, but using a uuid or other non-string type might make it easier to catch errors like this. Finally, if the id passed in is not found, an error could be surfaced indicating that this is the problem. Seeing that the id is not found when you know it exists would help other developers identify the issue.
 3.
 
 ## Submitting
