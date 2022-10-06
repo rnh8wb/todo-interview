@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { ApiClient, ToDo } from './ApiClient';
 import './App.css';
+import { Modal } from './components/Modal/Modal';
 
-const apiClient = new ApiClient(false);
+const apiClient = new ApiClient(true);
 
 function App() {
   const [todos, setTodos] = useState<ToDo[]>([]);
   const [label, setLabel] = useState('');
+  const [displaySpinner, setDisplaySpinner] = useState(false);
 
   useEffect(() => {
     apiClient
@@ -16,14 +18,17 @@ function App() {
   }, [setTodos]);
 
   function addTodoItem() {
+    setDisplaySpinner(true);
     // Update local storage with new item
     apiClient.addTodo(label).then((newTodo) => {
       // Update components state with new item
       setTodos([...todos, newTodo]);
+      setDisplaySpinner(false);
     });
   }
 
   function markTodoItemDone(todoId: string) {
+    setDisplaySpinner(true);
     // Update local storage with new `done` state of todo item
     apiClient.toggleDone(todoId).then((updatedTodo) => {
       if (updatedTodo) {
@@ -36,12 +41,14 @@ function App() {
         }
         // Update component's state with updated item's new state
         setTodos([...updatedTodos]);
+        setDisplaySpinner(false);
       }
     });
   }
 
   return (
     <>
+      {displaySpinner && <Modal />}
       <h1>To Do List</h1>
 
       <div className="add-todo-container">
