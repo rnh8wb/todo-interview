@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ApiClient, ToDo } from './ApiClient';
-import './App.css';
 import { Modal } from './components/Modal/Modal';
+import { ToDoList } from './components/ToDoList/ToDoList';
+import { arrayMoveImmutable } from 'array-move';
+import './App.css';
 
 const apiClient = new ApiClient(true);
 
@@ -46,6 +48,16 @@ function App() {
     });
   }
 
+  const onSortEnd = ({
+    oldIndex,
+    newIndex,
+  }: {
+    oldIndex: number;
+    newIndex: number;
+  }) => {
+    setTodos((prevItem) => arrayMoveImmutable(prevItem, oldIndex, newIndex));
+  };
+
   return (
     <>
       {displaySpinner && <Modal />}
@@ -59,19 +71,11 @@ function App() {
         />
         <button onClick={addTodoItem}>Add ToDo</button>
       </div>
-
-      {todos.map((todo) => (
-        <div key={todo.id} className="todo-item">
-          <label
-            style={{ textDecoration: todo.done ? 'line-through' : 'none' }}
-          >
-            {todo.label}
-          </label>
-          <button onClick={() => markTodoItemDone(todo.id)}>
-            Mark {todo.done ? 'Undone' : 'Done'}
-          </button>
-        </div>
-      ))}
+      <ToDoList
+        todos={todos}
+        onSortEnd={onSortEnd}
+        markTodoItemDoneHandler={markTodoItemDone}
+      />
     </>
   );
 }
