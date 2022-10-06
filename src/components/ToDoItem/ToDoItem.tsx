@@ -1,4 +1,3 @@
-import React from 'react';
 import { ToDo } from '../../ApiClient';
 import { SortableElement } from 'react-sortable-hoc';
 
@@ -20,4 +19,5 @@ function _ToDoItem({ todo, markTodoItemDoneHandler }: ToDoItemProps) {
   );
 }
 
+// The SortableElement HOC allows us to drag and drop items in the list
 export const ToDoItem = SortableElement<ToDoItemProps>(_ToDoItem);

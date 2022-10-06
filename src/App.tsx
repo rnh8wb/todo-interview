@@ -4,6 +4,7 @@ import { Modal } from './components/Modal/Modal';
 import { ToDoList } from './components/ToDoList/ToDoList';
 import { arrayMoveImmutable } from 'array-move';
 import './App.css';
+import { AddToDo } from './components/AddTodo/AddTodo';
 
 const apiClient = new ApiClient(true);
 
@@ -12,6 +13,7 @@ function App() {
   const [label, setLabel] = useState('');
   const [displaySpinner, setDisplaySpinner] = useState(false);
 
+  // Fetch todo items on init
   useEffect(() => {
     apiClient
       .getToDos()
@@ -20,11 +22,17 @@ function App() {
   }, [setTodos]);
 
   function addTodoItem() {
+    // Don't add empty items
+    if (label === '') {
+      return;
+    }
+
     setDisplaySpinner(true);
     // Update local storage with new item
     apiClient.addTodo(label).then((newTodo) => {
       // Update components state with new item
       setTodos([...todos, newTodo]);
+      setLabel('');
       setDisplaySpinner(false);
     });
   }
@@ -48,6 +56,7 @@ function App() {
     });
   }
 
+  // Drag and drop sort handler
   const onSortEnd = ({
     oldIndex,
     newIndex,
@@ -61,16 +70,15 @@ function App() {
   return (
     <>
       {displaySpinner && <Modal />}
+
       <h1>To Do List</h1>
 
-      <div className="add-todo-container">
-        <input
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          placeholder="Buy groceries"
-        />
-        <button onClick={addTodoItem}>Add ToDo</button>
-      </div>
+      <AddToDo
+        label={label}
+        setLabel={setLabel}
+        addtoDoItemHandler={addTodoItem}
+      />
+
       <ToDoList
         todos={todos}
         onSortEnd={onSortEnd}
